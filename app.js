@@ -8,17 +8,32 @@ const app = express();
 
 // connect to mongoDB
 const dbURI = 'mongodb+srv://netninjaCourse:test1234@nodetutorial.jofhapd.mongodb.net/node-tuts?retryWrites=true&w=majority';
-mongoose
-  .connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(
-    (
-      result // listen for requests
-    ) =>
-      app.listen(3000, () => {
-        console.log('listening on port');
-      })
-  )
-  .catch((err) => console.log(err));
+
+const database = async function () {
+  try {
+    await mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true });
+    console.log('connected to database');
+    app.listen(3000, () => {
+      console.log('listening on port');
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+database();
+
+// mongoose
+//   .connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
+//   .then(
+//     (
+//       result // listen for requests
+//     ) =>
+//       app.listen(3000, () => {
+//         console.log('listening on port');
+//       })
+//   )
+//   .catch((err) => console.log(err));
 
 // register view engine
 app.set('view engine', 'ejs');
@@ -84,11 +99,11 @@ app.get('/', (req, res) => {
 app.get('/about', (req, res) => {
   // res.send('<p>about page</p>');
   // res.sendFile('./views/about.html', { root: __dirname });
-  res.render('about', { title: 'About' });
+  res.render('about', { title: 'About' }); // first argument means the name of the file to render and the second argument is the object that contains the data that we want to pass to the view
 });
 
 app.get('/blogs/create', (req, res) => {
-  res.render('create', { title: 'Create a new Blog' });
+  res.render('create', { title: 'Create a new Blog' }); // first argument means the name of the file to render and the second argument is the object that contains the data that we want to pass to the view
 });
 
 // blog routes
@@ -97,7 +112,7 @@ app.get('/blogs', (req, res) => {
   Blog.find()
     .sort({ createdAt: -1 }) // sort by the date created in descending order
     .then((result) => {
-      res.render('index', { title: 'All Blogs', blogs: result });
+      res.render('index', { title: 'All Blogs', blogs: result }); // first argument means the name of the file to render and the second argument is the object that contains the data that we want to pass to the view
     })
     .catch((err) => console.log(err));
 });
